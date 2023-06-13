@@ -19,7 +19,7 @@ namespace dotnet_api_test.Persistence.Repositories
 
         public IEnumerable<Dish> GetAllDishes()
         {
-            throw new System.NotImplementedException();
+            return _context.Dishes.ToList();
         }
 
         public dynamic? GetAverageDishPrice()
