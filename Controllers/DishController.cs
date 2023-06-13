@@ -1,4 +1,5 @@
 using AutoMapper;
+using dotnet_api_test.Exceptions.ExceptionResponses;
 using dotnet_api_test.Models.Dtos;
 using dotnet_api_test.Persistence.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,18 @@ namespace dotnet_api_test.Controllers
         [Route("{id}")]
         public ActionResult<ReadDishDto> GetDishById(int id)
         {
-            return Ok();
+            _logger.LogInformation($"Controller action 'GetDishById' executed on {DateTime.Now.TimeOfDay}");
+
+            var dish = _dishRepository.GetDishById(id);
+
+            if (dish is null)
+            {
+                _logger.LogInformation($"Dish with ID {id} not found");
+                throw new NotFoundRequestExceptionResponse($"Could not find dish with ID {id}");
+            }
+
+            _logger.LogInformation($"Retrieved dish with ID {id} successfully");
+            return Ok(_mapper.Map<ReadDishDto>(dish));
         }
 
         [HttpPost]
