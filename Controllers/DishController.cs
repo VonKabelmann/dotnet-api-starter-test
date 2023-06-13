@@ -57,7 +57,25 @@ namespace dotnet_api_test.Controllers
         [Route("")]
         public ActionResult<ReadDishDto> CreateDish([FromBody] CreateDishDto createDishDto)
         {
-            return Ok();
+            _logger.LogInformation($"Controller action 'CreateDish' executed on {DateTime.Now.TimeOfDay}");
+
+            // Throws exception if dish with the same name already exists.
+            if (_dishRepository.GetAllDishes().Any(d => d.Name.Equals(createDishDto.Name)))
+            {
+                _logger.LogWarning($"Failed to create dish: dish with '{createDishDto.Name}' already exists");
+
+                throw new BadRequestExceptionResponse(
+                    $"Dish with name '{createDishDto.Name}' already exists");
+            }
+
+            var dish = _mapper.Map<Dish>(createDishDto);
+            _dishRepository.CreateDish(dish);
+            _dishRepository.SaveChanges();
+
+            _logger.LogInformation("Dish created successfully.");
+
+            var readDishDto = _mapper.Map<ReadDishDto>(dish);
+            return CreatedAtAction(nameof(GetDishById), new { id = readDishDto.Id }, readDishDto);
         }
 
         [HttpPut]
