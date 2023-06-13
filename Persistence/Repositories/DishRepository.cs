@@ -46,7 +46,8 @@ namespace dotnet_api_test.Persistence.Repositories
 
         public Dish UpdateDish(Dish dish)
         {
-            throw new System.NotImplementedException();
+            _context.Update(dish);
+            return dish;
         }
     }
 }
