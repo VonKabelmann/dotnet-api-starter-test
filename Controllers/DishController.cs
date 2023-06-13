@@ -82,7 +82,32 @@ namespace dotnet_api_test.Controllers
         [Route("{id}")]
         public ActionResult<ReadDishDto> UpdateDishById(int id, UpdateDishDto updateDishDto)
         {
-            return Ok();
+            _logger.LogInformation($"Controller action 'UpdateDishById' executed on {DateTime.Now.TimeOfDay}");
+
+            var dishToUpdate = _dishRepository.GetDishById(id);
+
+            if (dishToUpdate is null)
+            {
+                _logger.LogInformation($"Dish with ID {id} not found");
+                throw new NotFoundRequestExceptionResponse($"Could not find dish with ID {id}");
+            }
+
+            if (updateDishDto.Cost >= dishToUpdate.Cost * 1.2)
+            {
+                _logger.LogInformation("New price exceeds old price by 20%");
+                throw new BadRequestExceptionResponse("New price exceeds 20% increase from the old price.");
+            }
+
+            dishToUpdate.Name = updateDishDto.Name;
+            dishToUpdate.Cost = (double)updateDishDto.Cost;
+            dishToUpdate.MadeBy = updateDishDto.MadeBy;
+
+            _dishRepository.UpdateDish(dishToUpdate);
+            _dishRepository.SaveChanges();
+
+            _logger.LogInformation($"Dish with ID:{id} updated successfully.");
+
+            return Ok(_mapper.Map<ReadDishDto>(dishToUpdate));
         }
 
         [HttpDelete]
