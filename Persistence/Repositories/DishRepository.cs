@@ -29,7 +29,7 @@ namespace dotnet_api_test.Persistence.Repositories
 
         public Dish GetDishById(int Id)
         {
-            throw new System.NotImplementedException();
+            return _context.Find<Dish>(Id);
         }
 
         public void DeleteDishById(int Id)
