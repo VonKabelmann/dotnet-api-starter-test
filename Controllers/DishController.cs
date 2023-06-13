@@ -2,6 +2,7 @@ using AutoMapper;
 using dotnet_api_test.Exceptions.ExceptionResponses;
 using dotnet_api_test.Models.Dtos;
 using dotnet_api_test.Persistence.Repositories.Interfaces;
+using dotnet_api_test.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -57,6 +58,8 @@ namespace dotnet_api_test.Controllers
         [Route("")]
         public ActionResult<ReadDishDto> CreateDish([FromBody] CreateDishDto createDishDto)
         {
+            ModelValidation.ValidateCreateDishDto(createDishDto);
+
             _logger.LogInformation($"Controller action 'CreateDish' executed on {DateTime.Now.TimeOfDay}");
 
             // Throws exception if dish with the same name already exists.
@@ -82,6 +85,8 @@ namespace dotnet_api_test.Controllers
         [Route("{id}")]
         public ActionResult<ReadDishDto> UpdateDishById(int id, UpdateDishDto updateDishDto)
         {
+            ModelValidation.ValidateUpdateDishDto(updateDishDto);
+
             _logger.LogInformation($"Controller action 'UpdateDishById' executed on {DateTime.Now.TimeOfDay}");
 
             var dishToUpdate = _dishRepository.GetDishById(id);
