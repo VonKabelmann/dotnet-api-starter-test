@@ -114,7 +114,20 @@ namespace dotnet_api_test.Controllers
         [Route("{id}")]
         public ActionResult DeleteDishById(int id)
         {
-            return Ok();
+            _logger.LogInformation($"Controller action 'DeleteDishById' executed on {DateTime.Now.TimeOfDay}");
+
+            if (_dishRepository.GetDishById(id) is null)
+            {
+                _logger.LogInformation($"Dish with ID {id} not found");
+                throw new NotFoundRequestExceptionResponse($"Could not find dish with ID {id}");
+            }
+
+            _dishRepository.DeleteDishById(id);
+            _dishRepository.SaveChanges();
+
+            _logger.LogInformation($"Dish with ID:{id} deleted successfully");
+
+            return NoContent();
         }
     }
 }
