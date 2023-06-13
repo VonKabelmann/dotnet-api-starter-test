@@ -14,7 +14,7 @@ namespace dotnet_api_test.Persistence.Repositories
 
         void IDishRepository.SaveChanges()
         {
-            throw new System.NotImplementedException();
+            _context.SaveChanges();
         }
 
         public IEnumerable<Dish> GetAllDishes()
