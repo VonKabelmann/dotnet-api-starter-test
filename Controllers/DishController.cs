@@ -25,7 +25,13 @@ namespace dotnet_api_test.Controllers
         [Route("")]
         public ActionResult<DishesAndAveragePriceDto> GetDishesAndAverageDishPrice()
         {
-            return Ok();
+            _logger.LogInformation($"Controller action 'GetDishesAndAvarageDishPrice' executed on {DateTime.Now.TimeOfDay}");
+
+            return Ok(new DishesAndAveragePriceDto()
+            {
+                AveragePrice = _dishRepository.GetAverageDishPrice(),
+                Dishes = _dishRepository.GetAllDishes().Select(d => _mapper.Map<ReadDishDto>(d))
+            });
         }
 
         [HttpGet]
