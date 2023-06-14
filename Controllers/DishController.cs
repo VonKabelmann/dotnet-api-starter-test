@@ -66,7 +66,7 @@ namespace dotnet_api_test.Controllers
             {
                 _logger.LogWarning($"Failed to create dish: dish with '{createDishDto.Name}' already exists");
 
-                throw new BadRequestExceptionResponse(
+                throw new ConflictExceptionResponse(
                     $"Dish with name '{createDishDto.Name}' already exists");
             }
 
